@@ -2,24 +2,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // fragments from https://react-native-async-storage.github.io/async-storage/docs
 
-const createFirstLaunchValue = async () => {
-  try {
-    await AsyncStorage.setItem('firstLaunch', true);
-  } catch (e) {
-    console.error('Err in createFirstLaunchValue ', e);
-  }
+const setLaunchedBefore = async (value) => {
+    try {
+        await AsyncStorage.setItem('launchedBefore', value);
+    } catch (e) {
+        console.error('Err in createFirstLaunchValue ', e);
+    }
 };
 
-export const getFirstLaunchValue = async () => {
-  try {
-    const val = await AsyncStorage.getItem('firstLaunch');
-    if (!val) {
-      console.log('firstLaunch value is false ');
-    } else if (val !== null) {
-      console.log('first launch value is true. Setting to false...');
-      createFirstLaunchValue();
+export const getLaunchedBefore = async () => {
+    try {
+        const val = await AsyncStorage.getItem('launchedBefore');
+        return checkLaunchedBefore(val);
+    } catch (e) {
+        console.error('Err in getFirstLaunchValue ', e);
     }
-  } catch (e) {
-    console.error('Err in getFirstLaunchValue ', e);
-  }
 };
+
+const checkLaunchedBefore = (firstLaunch) => {
+    if (firstLaunch === null) {
+        setLaunchedBefore(jts(true));
+        return false;
+    } else {
+        return true;
+    }
+};
+
+const jts = (value) => JSON.stringify(value);
+
+const stj = (value) => (value ? JSON.parse(value) : null);
