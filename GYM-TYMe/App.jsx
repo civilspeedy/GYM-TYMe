@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { getLaunchedBefore } from './logic/storage';
+import LaunchPage from './Components/LaunchPage';
 
 export default function App() {
     const [launchedBefore, setLaunchedBefore] = useState(false);
@@ -15,6 +16,7 @@ export default function App() {
     return (
         <View style={styles.container}>
             <StatusBar style='auto' />
+            <LaunchPage />
         </View>
     );
 }
