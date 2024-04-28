@@ -18,6 +18,10 @@ export default function CreateSplits() {
 
     const Split = () => {
         const [title, setTitle] = useState('');
+
+        useEffect(() => {
+            //need check if title is empty and they check if this split has already been done
+        }, [title]);
         return (
             <View style={stl.splitContainer}>
                 <TextInput
@@ -69,6 +73,7 @@ const stl = StyleSheet.create({
         backgroundColor: 'grey',
         borderRadius: 50,
         marginBottom: 10,
+        alignSelf: 'center',
     },
     splitEntry: {
         width: '90%',
@@ -80,6 +85,7 @@ const stl = StyleSheet.create({
         borderRadius: 50,
         padding: 10,
         width: '30%',
+        alignSelf: 'center',
     },
     add: {
         fontWeight: 'bold',
