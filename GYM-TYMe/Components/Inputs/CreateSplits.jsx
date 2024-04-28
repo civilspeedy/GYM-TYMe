@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+    LayoutAnimation,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+} from 'react-native';
 
 export default function CreateSplits() {
     const [splitList, setSplitList] = useState([]);
 
     const addSplit = () => {
-        setSplitList((prev) => [...prev, <Split />]);
+        setSplitList((prev) => [...prev, 1]);
     };
 
     const Split = () => {
@@ -23,19 +31,23 @@ export default function CreateSplits() {
 
     const NewSplit = () => {
         return (
-            <Pressable style={stl.newSplit}>
+            <Pressable
+                style={stl.newSplit}
+                onPress={() => addSplit()}>
                 <Text style={stl.add}>+</Text>
             </Pressable>
         );
     };
-
+    LayoutAnimation.easeInEaseOut();
     return (
         <View style={stl.container}>
-            <Split />
-            {splitList.map((item, index) => (
-                <View key={index}>{item}</View>
-            ))}
-            <NewSplit />
+            <ScrollView style={stl.scroll}>
+                <Split />
+                {splitList.map((item, index) => (
+                    <Split key={index} />
+                ))}
+                <NewSplit />
+            </ScrollView>
         </View>
     );
 }
@@ -44,21 +56,30 @@ const stl = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: 'grey',
+        backgroundColor: 'pink',
+    },
+    scroll: {
+        width: '100%',
+        height: '100%',
+        alignSelf: 'center',
     },
     splitContainer: {
-        width: '80%',
-        height: '10%',
-        alignSelf: 'center',
-        backgroundColor: 'brown',
+        width: '70%',
+        height: 30,
+        backgroundColor: 'grey',
+        borderRadius: 50,
         marginBottom: 10,
     },
     splitEntry: {
-        width: '100%',
+        width: '90%',
         height: '100%',
+        alignSelf: 'center',
     },
     newSplit: {
         backgroundColor: 'darkgrey',
+        borderRadius: 50,
+        padding: 10,
+        width: '30%',
     },
     add: {
         fontWeight: 'bold',
