@@ -127,3 +127,4 @@ dist
 .pnp.*
 GYM-TYMe/package-lock.json
 GYM-TYMe/package-lock.json
+.DS_Store
