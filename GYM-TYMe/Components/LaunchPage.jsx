@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CreateSplits from './Inputs/CreateSplits';
+import SelectDays from './Inputs/Select Days';
 
 export default function LaunchPage() {
     const [state, setState] = useState(1);
@@ -14,10 +15,12 @@ export default function LaunchPage() {
                 {state === 1 ? (
                     <View style={stl.splitsView}>
                         <Text style={stl.inputStyle}>Splits:</Text>
-                        <CreateSplits />
+                        <CreateSplits setState={setState} />
                     </View>
                 ) : state === 2 ? (
-                    <View></View>
+                    <View>
+                        <SelectDays />
+                    </View>
                 ) : (
                     <View></View>
                 )}

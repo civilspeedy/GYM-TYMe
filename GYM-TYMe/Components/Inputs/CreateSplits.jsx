@@ -9,11 +9,15 @@ import {
     View,
 } from 'react-native';
 
-export default function CreateSplits() {
+export default function CreateSplits({ setState }) {
     const [splitList, setSplitList] = useState([]);
 
     const addSplit = () => {
         setSplitList((prev) => [...prev, 1]);
+    };
+
+    const confirm = () => {
+        setState(2);
     };
 
     const Split = () => {
@@ -38,7 +42,7 @@ export default function CreateSplits() {
             <Pressable
                 style={stl.newSplit}
                 onPress={() => addSplit()}>
-                <Text style={stl.add}>+</Text>
+                <Text style={stl.buttonText}>+</Text>
             </Pressable>
         );
     };
@@ -52,6 +56,11 @@ export default function CreateSplits() {
                 ))}
                 <NewSplit />
             </ScrollView>
+            <Pressable
+                style={stl.confirm}
+                onPress={() => confirm()}>
+                <Text style={stl.buttonText}>Confirm</Text>
+            </Pressable>
         </View>
     );
 }
@@ -69,10 +78,11 @@ const stl = StyleSheet.create({
     },
     splitContainer: {
         width: '70%',
-        height: 30,
+        height: 40,
         backgroundColor: 'grey',
-        borderRadius: 50,
+        borderRadius: 10,
         marginBottom: 10,
+        padding: 10,
         alignSelf: 'center',
     },
     splitEntry: {
@@ -82,14 +92,20 @@ const stl = StyleSheet.create({
     },
     newSplit: {
         backgroundColor: 'darkgrey',
-        borderRadius: 50,
+        borderRadius: 10,
         padding: 10,
         width: '30%',
         alignSelf: 'center',
     },
-    add: {
+    buttonText: {
         fontWeight: 'bold',
         fontSize: 30,
         textAlign: 'center',
+    },
+    confirm: {
+        backgroundColor: 'grey',
+        padding: 10,
+        alignSelf: 'center',
+        borderRadius: 10,
     },
 });
