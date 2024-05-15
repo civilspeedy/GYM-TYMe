@@ -1,5 +1,7 @@
+import { impactAsync } from 'expo-haptics';
 import { useEffect, useState } from 'react';
 import {
+    Alert,
     LayoutAnimation,
     Pressable,
     ScrollView,
@@ -9,16 +11,28 @@ import {
     View,
 } from 'react-native';
 
-export default function CreateSplits({ setState }) {
+export default function CreateSplits() {
     const [splitList, setSplitList] = useState([]);
+    const [showRemove, setShowRemove] = useState(false);
 
     const addSplit = () => {
+        impactAsync();
         setSplitList((prev) => [...prev, 1]);
     };
 
-    const confirm = () => {
-        setState(2);
+    const removeSplit = () => {
+        impactAsync();
+        setSplitList(splitList.slice(0, -1));
     };
+
+    useEffect(() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+        if (splitList.length > 0) {
+            setShowRemove(true);
+        } else {
+            setShowRemove(false);
+        }
+    }, [splitList]);
 
     const Split = () => {
         const [title, setTitle] = useState('');
@@ -40,13 +54,26 @@ export default function CreateSplits({ setState }) {
     const NewSplit = () => {
         return (
             <Pressable
-                style={stl.newSplit}
-                onPress={() => addSplit()}>
+                style={stl.btn}
+                onPress={() => {
+                    addSplit();
+                }}>
                 <Text style={stl.buttonText}>+</Text>
             </Pressable>
         );
     };
-    LayoutAnimation.easeInEaseOut();
+
+    const RemoveSplit = () => {
+        return (
+            <Pressable
+                style={stl.btn}
+                onPress={() => {
+                    removeSplit();
+                }}>
+                <Text style={stl.buttonText}>-</Text>
+            </Pressable>
+        );
+    };
     return (
         <View style={stl.container}>
             <ScrollView style={stl.scroll}>
@@ -54,13 +81,11 @@ export default function CreateSplits({ setState }) {
                 {splitList.map((item, index) => (
                     <Split key={index} />
                 ))}
-                <NewSplit />
+                <View style={stl.buttons}>
+                    {showRemove === true ? <RemoveSplit /> : <View></View>}
+                    <NewSplit />
+                </View>
             </ScrollView>
-            <Pressable
-                style={stl.confirm}
-                onPress={() => confirm()}>
-                <Text style={stl.buttonText}>Confirm</Text>
-            </Pressable>
         </View>
     );
 }
@@ -69,7 +94,6 @@ const stl = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: 'pink',
     },
     scroll: {
         width: '100%',
@@ -79,7 +103,7 @@ const stl = StyleSheet.create({
     splitContainer: {
         width: '70%',
         height: 40,
-        backgroundColor: 'grey',
+        backgroundColor: '#9649B6',
         borderRadius: 10,
         marginBottom: 10,
         padding: 10,
@@ -90,22 +114,22 @@ const stl = StyleSheet.create({
         height: '100%',
         alignSelf: 'center',
     },
-    newSplit: {
-        backgroundColor: 'darkgrey',
+    btn: {
+        backgroundColor: '#4969B6',
         borderRadius: 10,
         padding: 10,
         width: '30%',
         alignSelf: 'center',
+        margin: 2,
     },
     buttonText: {
         fontWeight: 'bold',
         fontSize: 30,
         textAlign: 'center',
     },
-    confirm: {
-        backgroundColor: 'grey',
-        padding: 10,
+    buttons: {
+        flex: 1,
+        flexDirection: 'row',
         alignSelf: 'center',
-        borderRadius: 10,
     },
 });
