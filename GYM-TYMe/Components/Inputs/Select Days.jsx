@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { impactAsync } from 'expo-haptics';
+import { sJson } from '../../logic/storage';
 
 export default function SelectDays() {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const Day = ({ dayName }) => {
         const [colour, setColour] = useState('black');
         const [txtClr, setTxtClr] = useState('white');
+        const [borderColour, setBorderColour] = useState('white')
         const [state, setState] = useState(false);
 
         useEffect(() => {
             impactAsync();
             if (state) {
-                setColour('white');
+                setColour('#4969B6');
                 setTxtClr('black');
             } else {
                 setColour('black');
@@ -22,7 +24,7 @@ export default function SelectDays() {
 
         return (
             <Pressable
-                style={[stl.dayBtn, { backgroundColor: colour }]}
+                style={[stl.dayBtn, { borderColor: borderColour, backgroundColor: colour }]}
                 onPress={() => setState(!state)}>
                 <Text style={([stl.btnTxt], { color: txtClr })}>{dayName}</Text>
             </Pressable>
@@ -50,13 +52,16 @@ const stl = StyleSheet.create({
         height: '100%',
     },
     dayBtn: {
-        padding: 20,
-        width: 80,
-        height: 80,
+        padding: sJson.padding,
+        width: 75,
+        height: 75,
         borderRadius: 50,
-        borderWidth: 3,
+        borderWidth: sJson.borderSize,
         justifyContent: 'center',
         alignItems: 'center',
         margin: 2,
     },
+    btnTxt: {
+        flex: 1,
+    }
 });

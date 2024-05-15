@@ -10,6 +10,7 @@ import {
     TextInput,
     View,
 } from 'react-native';
+import { sJson } from '../../logic/storage';
 
 export default function CreateSplits() {
     const [splitList, setSplitList] = useState([]);
@@ -93,7 +94,6 @@ export default function CreateSplits() {
 const stl = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
     },
     scroll: {
         width: '100%',
@@ -103,7 +103,7 @@ const stl = StyleSheet.create({
     splitContainer: {
         width: '70%',
         height: 40,
-        backgroundColor: '#9649B6',
+        backgroundColor: sJson.primary,
         borderRadius: 10,
         marginBottom: 10,
         padding: 10,
@@ -115,10 +115,11 @@ const stl = StyleSheet.create({
         alignSelf: 'center',
     },
     btn: {
-        backgroundColor: '#4969B6',
+        backgroundColor: sJson.secondary,
         borderRadius: 10,
-        padding: 10,
-        width: '30%',
+        padding: sJson.padding,
+        flex: 1,
+        maxWidth: 72,
         alignSelf: 'center',
         margin: 2,
     },

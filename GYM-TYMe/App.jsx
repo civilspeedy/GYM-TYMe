@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import { useEffect, useState } from 'react';
 import { getLaunchedBefore } from './logic/storage';
 import LaunchPage from './Components/LaunchPage';
 
 export default function App() {
     const [launchedBefore, setLaunchedBefore] = useState(false);
-
+    const systemTheme = useColorScheme(); // not working correctly
+    
     getLaunchedBefore()
         .then((value) => {
             setLaunchedBefore(value);
@@ -24,7 +25,7 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#5F49B6',
+        backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
     },

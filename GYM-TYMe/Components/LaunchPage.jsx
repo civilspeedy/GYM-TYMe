@@ -9,6 +9,7 @@ import {
 import CreateSplits from './Inputs/CreateSplits';
 import SelectDays from './Inputs/Select Days';
 import { impactAsync } from 'expo-haptics';
+import { sJson } from '../logic/storage';
 
 export default function LaunchPage() {
     const [state, setState] = useState(1);
@@ -47,7 +48,7 @@ export default function LaunchPage() {
             <View style={stl.middleSection}>
                 {state === 1 ? (
                     <View style={stl.splitsView}>
-                        <Text style={stl.inputStyle}>Splits:</Text>
+                        <Text style={stl.inputHeading}>Splits:</Text>
                         <CreateSplits setState={setState} />
                     </View>
                 ) : state === 2 ? (
@@ -94,12 +95,12 @@ const stl = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 35,
+        color: sJson.primary
     },
     middleSection: {
         flex: 0.6,
         width: '100%',
         height: '100%',
-
         justifyContent: 'center',
     },
     bottomSection: {
@@ -113,18 +114,19 @@ const stl = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
-        padding: 20,
+        padding: sJson.padding,
     },
-    inputStyle: {
+    inputHeading: {
         fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
+        color: 'white'
     },
     bottomBtn: {
         padding: 10,
         alignSelf: 'center',
         borderRadius: 10,
-        backgroundColor: '#4969B6',
+        backgroundColor: sJson.secondary,
         margin: 2,
     },
     btnText: {
