@@ -7,9 +7,10 @@ import {
   View,
 } from 'react-native';
 import CreateSplits from './Inputs/CreateSplits';
-import SelectDays from './Inputs/Select Days';
+import SelectDays from './Inputs/SelectDays';
 import { impactAsync } from 'expo-haptics';
 import { sJson } from '../logic/storage';
+import AssignDays from './Inputs/AssignDays';
 
 export default function LaunchPage() {
   const [state, setState] = useState(1);
@@ -17,6 +18,7 @@ export default function LaunchPage() {
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+    console.log(state);
     if (state === 3) {
       SetCnfrmTxt('Finish');
     } else {
@@ -52,9 +54,13 @@ export default function LaunchPage() {
             <CreateSplits setState={setState} />
           </View>
         ) : state === 2 ? (
-          <View>
+          <View style={stl.splitsView}>
             <Text style={stl.inputHeading}>Days:</Text>
             <SelectDays />
+          </View>
+        ) : state === 3 ? (
+          <View style={stl.splitsView}>
+            <AssignDays />
           </View>
         ) : (
           <View></View>
@@ -115,7 +121,6 @@ const stl = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    padding: sJson.padding,
   },
   inputHeading: {
     fontSize: 30,

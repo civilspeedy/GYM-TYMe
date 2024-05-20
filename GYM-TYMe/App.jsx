@@ -3,6 +3,7 @@ import { StyleSheet, View, useColorScheme } from 'react-native';
 import { useEffect, useState } from 'react';
 import { getLaunchedBefore } from './logic/storage';
 import LaunchPage from './Components/LaunchPage';
+import ProgressPage from './Components/ProgressPage';
 
 export default function App() {
   const [launchedBefore, setLaunchedBefore] = useState(false);
