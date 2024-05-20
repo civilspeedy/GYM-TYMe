@@ -1,6 +1,8 @@
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { dayState } from './SelectDays';
 import { useEffect, useState } from 'react';
+import DayDisplay from '../Outputs/DayDisplay';
+import { impactAsync } from 'expo-haptics';
 
 export default function AssignDays() {
   // day selection working but needs impanation here
@@ -10,7 +12,6 @@ export default function AssignDays() {
     const getDays = () => {
       const tempStore = [];
       for (day in dayState) {
-        console.log('day value: ', dayState[day]);
         if (dayState[day] === true) {
           tempStore.push(day);
         }
@@ -23,7 +24,26 @@ export default function AssignDays() {
   }, []);
   console.log(daysToDisplay);
 
-  return <View style={stl.container}></View>;
+  const handleScroll = () => {
+    impactAsync();
+  };
+
+  // updating issue on android
+
+  return (
+    <View style={stl.container}>
+      <ScrollView style={stl.list}>
+        {daysToDisplay.map((dayName, index) => (
+          <DayDisplay
+            key={index}
+            dayName={dayName}
+            state={false}
+            setState={null}
+          />
+        ))}
+      </ScrollView>
+    </View>
+  );
 }
 const stl = StyleSheet.create({
   container: {
@@ -32,7 +52,11 @@ const stl = StyleSheet.create({
     height: '100%',
     backgroundColor: 'green',
   },
-  flatList: {
+  list: {
     flex: 1,
+    width: '100%',
+    height: '100%',
+    alignSelf: 'center',
+    backgroundColor: 'red',
   },
 });

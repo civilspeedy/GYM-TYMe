@@ -60,6 +60,7 @@ export default function LaunchPage() {
           </View>
         ) : state === 3 ? (
           <View style={stl.splitsView}>
+            <Text style={stl.inputHeading}>Assign Splits To Days:</Text>
             <AssignDays />
           </View>
         ) : (
