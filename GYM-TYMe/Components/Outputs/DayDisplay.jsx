@@ -3,14 +3,13 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { sJson } from '../../logic/storage';
 import { impactAsync } from 'expo-haptics';
 
-export default function DayDisplay({ dayName, button, dayState }) {
+export default function DayDisplay({ dayName, button, state, setState }) {
   const [colour, setColour] = useState('black');
   const [txtClr, setTxtClr] = useState('white');
-  const [state, setState] = useState(false);
 
   useEffect(() => {
     impactAsync();
-    if (state) {
+    if (state[dayName]) {
       setColour(sJson.primary);
       setTxtClr('black');
     } else {
@@ -21,8 +20,7 @@ export default function DayDisplay({ dayName, button, dayState }) {
 
   const handlePress = () => {
     if (button) {
-      setState(!state);
-      dayState[dayName] = !state;
+      setState(dayName);
     }
   };
 
