@@ -5,7 +5,7 @@ import DayDisplay from '../Outputs/DayDisplay';
 import { impactAsync } from 'expo-haptics';
 
 export default function AssignDays() {
-  // day selection working but needs impanation here
+  // day selection working
   const [daysToDisplay, setDaysToDisplay] = useState([]);
 
   useEffect(() => {

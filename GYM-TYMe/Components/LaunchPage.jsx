@@ -50,7 +50,7 @@ export default function LaunchPage() {
       <View style={stl.middleSection}>
         {state === 1 ? (
           <View style={stl.splitsView}>
-            <Text style={stl.inputHeading}>Splits:</Text>
+            <Text style={stl.inputHeading}>Create Splits:</Text>
             <CreateSplits setState={setState} />
           </View>
         ) : state === 2 ? (
