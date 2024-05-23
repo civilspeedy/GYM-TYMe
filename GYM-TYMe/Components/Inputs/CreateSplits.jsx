@@ -1,6 +1,7 @@
 import { impactAsync } from 'expo-haptics';
 import { useEffect, useState } from 'react';
 import {
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,11 +13,6 @@ import { sJson } from '../../logic/storage';
 
 export default function CreateSplits() {
   const [splitList, setSplitList] = useState([]);
-
-  const removeSplit = () => {
-    impactAsync();
-    setSplitList(splitList.slice(0, -1));
-  };
 
   const MakeSplit = () => {
     const [title, setTitle] = useState('');
@@ -30,7 +26,11 @@ export default function CreateSplits() {
         />
         <Pressable
           style={stl.confirmSplit}
-          onPress={() => setSplitList([...splitList, title])}>
+          onPress={() => {
+            impactAsync();
+            setSplitList([...splitList, title]);
+          }}
+        >
           <Text style={stl.splitFont}>+</Text>
         </Pressable>
       </View>
@@ -44,10 +44,31 @@ export default function CreateSplits() {
           style={[
             stl.splitFont,
             { flex: 1, alignSelf: 'center', marginLeft: 20 },
-          ]}>
+          ]}
+        >
           {splitName}
         </Text>
-        <Pressable style={stl.confirmSplit}>
+        <Pressable
+          style={stl.confirmSplit}
+          onPress={() =>
+            setSplitList((prevList) => {
+              Alert.alert('Remove', 'Remove Split?', [
+                {
+                  text: 'Yes',
+                  onPress: () => {
+                    impactAsync();
+                    const tempList = [...prevList];
+                    tempList.splice(index, 1);
+                    return tempList;
+                  },
+                },
+                {
+                  text: 'No',
+                },
+              ]);
+            })
+          }
+        >
           <Text style={stl.splitFont}>-</Text>
         </Pressable>
       </View>
@@ -69,7 +90,8 @@ export default function CreateSplits() {
       </ScrollView>
       <Pressable
         style={stl.clearButton}
-        onPress={() => setSplitList([])}>
+        onPress={() => setSplitList([])}
+      >
         <Text style={stl.splitFont}>Clear</Text>
       </Pressable>
     </View>
