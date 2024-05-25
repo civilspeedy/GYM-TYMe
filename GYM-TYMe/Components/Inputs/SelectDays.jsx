@@ -13,7 +13,7 @@ export let dayState = {
   Sun: false,
 };
 
-export default function SelectDays() {
+export default function SelectDays({ confirmSate, setConfirmSate }) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const [day, setDay] = useState({
@@ -36,6 +36,7 @@ export default function SelectDays() {
   useEffect(() => {
     dayState = day;
   }, [day]);
+
   return (
     <View style={stl.container}>
       <View style={stl.dayBtnContainer}>

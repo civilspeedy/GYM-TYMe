@@ -16,6 +16,9 @@ export default function LaunchPage() {
   const [state, setState] = useState(1);
   const [cnfrmTxt, SetCnfrmTxt] = useState('Confirm');
 
+  const [confirmState, setConfirmState] = useState(false);
+  // to change when confirm button pressed to trigger async save of options
+
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
     console.log(state);
@@ -27,6 +30,7 @@ export default function LaunchPage() {
   }, [state]);
 
   const confirm = () => {
+    setConfirmState(true);
     if (state < 3) {
       LayoutAnimation.easeInEaseOut();
       impactAsync();

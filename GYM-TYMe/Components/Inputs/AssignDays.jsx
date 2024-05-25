@@ -7,29 +7,23 @@ import { impactAsync } from 'expo-haptics';
 export default function AssignDays() {
   // day selection working
   const [daysToDisplay, setDaysToDisplay] = useState([]);
-
+  // i genuinely have no idea what is going wrong
   useEffect(() => {
     const getDays = () => {
-      const tempStore = [];
-      for (day in dayState) {
+      const temp = [];
+
+      for (const day in dayState) {
+        console.log(day);
         if (dayState[day] === true) {
-          tempStore.push(day);
+          temp.push(day);
         }
       }
-
-      setDaysToDisplay(tempStore);
+      console.log(temp);
+      setDaysToDisplay((prev) => [...prev, ...temp]);
     };
 
     getDays();
-  }, []);
-  console.log(daysToDisplay);
-
-  const handleScroll = () => {
-    impactAsync();
-  };
-
-  // updating issue on android
-
+  }, [dayState]);
   return (
     <View style={stl.container}>
       <ScrollView style={stl.list}>

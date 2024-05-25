@@ -11,11 +11,13 @@ import {
 } from 'react-native';
 import { sJson } from '../../logic/storage';
 
-export default function CreateSplits() {
+export default function CreateSplits({ confirmState, setConfirmState }) {
   const [splitList, setSplitList] = useState([]);
 
   const MakeSplit = () => {
     const [title, setTitle] = useState('');
+
+    useEffect(() => {}, [confirmState]);
 
     return (
       <View style={stl.splitContainer}>
@@ -29,8 +31,7 @@ export default function CreateSplits() {
           onPress={() => {
             impactAsync();
             setSplitList([...splitList, title]);
-          }}
-        >
+          }}>
           <Text style={stl.splitFont}>+</Text>
         </Pressable>
       </View>
@@ -44,31 +45,30 @@ export default function CreateSplits() {
           style={[
             stl.splitFont,
             { flex: 1, alignSelf: 'center', marginLeft: 20 },
-          ]}
-        >
+          ]}>
           {splitName}
         </Text>
         <Pressable
           style={stl.confirmSplit}
-          onPress={() =>
-            setSplitList((prevList) => {
-              Alert.alert('Remove', 'Remove Split?', [
-                {
-                  text: 'Yes',
-                  onPress: () => {
-                    impactAsync();
+          onPress={() => {
+            Alert.alert('Remove Split?', '', [
+              {
+                text: 'Yes',
+                onPress: () => {
+                  impactAsync();
+                  setSplitList((prevList) => {
                     const tempList = [...prevList];
                     tempList.splice(index, 1);
                     return tempList;
-                  },
+                  });
                 },
-                {
-                  text: 'No',
-                },
-              ]);
-            })
-          }
-        >
+              },
+              {
+                text: 'No',
+                onPress: () => impactAsync(),
+              },
+            ]);
+          }}>
           <Text style={stl.splitFont}>-</Text>
         </Pressable>
       </View>
@@ -90,8 +90,7 @@ export default function CreateSplits() {
       </ScrollView>
       <Pressable
         style={stl.clearButton}
-        onPress={() => setSplitList([])}
-      >
+        onPress={() => setSplitList([])}>
         <Text style={stl.splitFont}>Clear</Text>
       </Pressable>
     </View>
