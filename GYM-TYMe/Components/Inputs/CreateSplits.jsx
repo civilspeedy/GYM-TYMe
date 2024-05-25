@@ -31,7 +31,8 @@ export default function CreateSplits({ confirmState, setConfirmState }) {
           onPress={() => {
             impactAsync();
             setSplitList([...splitList, title]);
-          }}>
+          }}
+        >
           <Text style={stl.splitFont}>+</Text>
         </Pressable>
       </View>
@@ -45,7 +46,8 @@ export default function CreateSplits({ confirmState, setConfirmState }) {
           style={[
             stl.splitFont,
             { flex: 1, alignSelf: 'center', marginLeft: 20 },
-          ]}>
+          ]}
+        >
           {splitName}
         </Text>
         <Pressable
@@ -68,7 +70,8 @@ export default function CreateSplits({ confirmState, setConfirmState }) {
                 onPress: () => impactAsync(),
               },
             ]);
-          }}>
+          }}
+        >
           <Text style={stl.splitFont}>-</Text>
         </Pressable>
       </View>
@@ -90,7 +93,8 @@ export default function CreateSplits({ confirmState, setConfirmState }) {
       </ScrollView>
       <Pressable
         style={stl.clearButton}
-        onPress={() => setSplitList([])}>
+        onPress={() => setSplitList([])}
+      >
         <Text style={stl.splitFont}>Clear</Text>
       </Pressable>
     </View>

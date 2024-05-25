@@ -56,9 +56,18 @@ export const getDays = async () => {
 
 export const setSplits = async (val) => {
   try {
-    await AsyncStorage.setItem('splits', val);
+    await AsyncStorage.setItem('splits', jts(val));
   } catch (e) {
     console.error('err in setSplits ', e);
+  }
+};
+
+export const getSplits = async () => {
+  try {
+    const val = await AsyncStorage.get('splits');
+    return stj(val);
+  } catch (e) {
+    console.error('err in getSplits ', e);
   }
 };
 const jts = (val) => JSON.stringify(val);
