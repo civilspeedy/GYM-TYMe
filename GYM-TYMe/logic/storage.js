@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const temp = require('../data/templates.json');
+const templates = temp[0];
+
 // fragments from https://react-native-async-storage.github.io/async-storage/docs
 
 const setLaunchedBefore = async (val) => {
@@ -54,21 +57,43 @@ export const getDays = async () => {
   }
 };
 
-export const setSplits = async (val) => {
+export const createSplit = async (val) => {
+  const splits = await getSplits();
+  let list = []; // needs testing
+  const object = templates.split;
   try {
+    if (!isSplitsEmpty(splits)) {
+      list = splits;
+    }
+    object.name = val;
+    list.push(object);
+
     await AsyncStorage.setItem('splits', jts(val));
   } catch (e) {
     console.error('err in setSplits ', e);
   }
 };
 
-export const getSplits = async () => {
+export const getSplits = async (val) => {
   try {
-    const val = await AsyncStorage.get('splits');
+    const val = await AsyncStorage.getItem('splits');
     return stj(val);
   } catch (e) {
     console.error('err in getSplits ', e);
   }
+};
+
+export const isSplitsEmpty = async () => {
+  try {
+    console.log(val);
+    if (val === null || val === undefined) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.error('err in isSplitsEmpty ', e);
+  }
+  return false;
 };
 const jts = (val) => JSON.stringify(val);
 

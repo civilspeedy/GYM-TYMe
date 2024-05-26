@@ -75,7 +75,8 @@ export default function LaunchPage() {
         {state !== 1 ? (
           <Pressable
             style={stl.bottomBtn}
-            onPress={() => back()}>
+            onPress={() => back()}
+          >
             <Text style={stl.btnText}>Back</Text>
           </Pressable>
         ) : (
@@ -83,7 +84,8 @@ export default function LaunchPage() {
         )}
         <Pressable
           style={stl.bottomBtn}
-          onPress={() => confirm()}>
+          onPress={() => confirm()}
+        >
           <Text style={stl.btnText}>{cnfrmTxt}</Text>
         </Pressable>
       </View>
