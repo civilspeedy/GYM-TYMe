@@ -9,7 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { sJson } from '../../logic/storage';
+import { createSplit, sJson } from '../../logic/storage';
 
 export default function CreateSplits({ confirmState, setConfirmState }) {
   const [splitList, setSplitList] = useState([]);
@@ -17,7 +17,17 @@ export default function CreateSplits({ confirmState, setConfirmState }) {
   const MakeSplit = () => {
     const [title, setTitle] = useState('');
 
-    useEffect(() => {}, [confirmState]);
+    useEffect(() => {
+      if (confirmState) {
+        console.log('splitList: ', splitList);
+        for (const split in splitList) {
+          console.log('here');
+          createSplit(split);
+        }
+        setConfirmState(false);
+      }
+      console.log('confirm state: ', confirmState);
+    }, [confirmState]);
 
     return (
       <View style={stl.splitContainer}>

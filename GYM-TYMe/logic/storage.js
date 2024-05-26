@@ -59,8 +59,10 @@ export const getDays = async () => {
 
 export const createSplit = async (val) => {
   const splits = await getSplits();
-  let list = []; // needs testing
+  let list = [];
   const object = templates.split;
+
+  console.log('creating split');
   try {
     if (!isSplitsEmpty(splits)) {
       list = splits;
@@ -83,9 +85,8 @@ export const getSplits = async (val) => {
   }
 };
 
-export const isSplitsEmpty = async () => {
+export const isSplitsEmpty = async (val) => {
   try {
-    console.log(val);
     if (val === null || val === undefined) {
       return true;
     }

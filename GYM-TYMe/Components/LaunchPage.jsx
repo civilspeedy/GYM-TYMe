@@ -16,7 +16,7 @@ export default function LaunchPage() {
   const [state, setState] = useState(1);
   const [cnfrmTxt, SetCnfrmTxt] = useState('Confirm');
 
-  const [confirmState, setConfirmState] = useState(false);
+  const [confirmState, setConfirmState] = useState(false); // button needs removing
   // to change when confirm button pressed to trigger async save of options
 
   useEffect(() => {
@@ -55,7 +55,10 @@ export default function LaunchPage() {
         {state === 1 ? (
           <View style={stl.splitsView}>
             <Text style={stl.inputHeading}>Create Splits:</Text>
-            <CreateSplits setState={setState} />
+            <CreateSplits
+              confirmState={confirmState}
+              setConfirmState={setConfirmState}
+            />
           </View>
         ) : state === 2 ? (
           <View style={stl.splitsView}>
