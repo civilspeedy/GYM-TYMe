@@ -159,6 +159,23 @@ async function getSplits() {
 }
 
 /**
+ * Finds a split based of a name and returns
+ * @param {Array} splits the array containing the splits
+ * @param {string} splitName a name to identify the split with
+ * @param {number} counter a number to increment marking the split's location in the list
+ * @returns {object} the matching split
+ */
+function loopThroughSplits(splits, splitName, counter) {
+  for (const split in splits) {
+    counter++;
+    if (split.name == splitName) {
+      return split;
+    }
+  }
+  return null;
+}
+
+/**
  * Updates data in a stored split, excluding exercise data
  * @param {string} splitName the name of the split to be updated
  * @param {string} dataType the type of data to be updated
@@ -166,35 +183,47 @@ async function getSplits() {
  */
 async function updateSplitData(splitName, dataType, replacementData) {
   const splits = getSplits();
-  let selectedSplit = null;
-
   let counter = 0;
-  for (const split in splits) {
-    counter++;
-    if (split.name == splitName) {
-      selectedSplit = split;
-      break;
-    }
-  }
+  const selectedSplit = loopThroughSplits(splits, splitName, counter);
 
   if (selectedSplit === null) {
     console.error('Error in updateSplits: there are no splits with this name');
+    return false;
   }
 
   switch (dataType) {
     case 'name':
       selectedSplit.name = replacementData;
+      break;
     case 'dayOfWeek':
       selectedSplit.dayOfWeek = replacementData;
+      break;
+    default:
+      console.error(
+        'Error in updateSplitData: could not find matching attribute'
+      );
+      return false;
   }
 
   splits[counter] = selectedSplit;
 
-  storeItem('splits');
+  storeItem('splits', splits);
+  return true;
 }
 
 // add exercise to split
 
+async function addExercise(splitName, exerciseType) {}
+
+/**
+ * Update a preexisting exercise within a split
+ * @param {string} splitName the name of the split containing the exercise
+ * @param {number} exerciseId the number to identify the exercise with
+ * @param {string} exerciseType the type of exercise
+ * @param {string} dataType the type of data being updated
+ * @param {*} replacementData the new data
+ * @returns {boolean} a boolean representing whether the data was stored
+ */
 async function updateExercise(
   splitName,
   exerciseId,
@@ -235,10 +264,18 @@ async function updateExercise(
     switch (dataType) {
       case 'weight':
         selectedExercise.weight = replacementData;
+        break;
       case 'reps':
         selectedExercise.reps = replacementData;
+        break;
       case 'sets':
         selectedExercise.sets = replacementData;
+        break;
+      default:
+        console.error(
+          'Error in updateExercise: could not find matching attribute'
+        );
+        return false;
     }
     return true;
   }
