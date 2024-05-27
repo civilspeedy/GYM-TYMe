@@ -126,7 +126,7 @@ export async function checkIfExists(item) {
  * @param {string} name the name the user wishes to give to the spit
  * @param {string} dayOfTheWeek the day of the week the split will be assigned to
  */
-async function storeSplit(name, dayOfWeek) {
+async function createSplit(name, dayOfWeek) {
   const item = split;
   item.name = name;
   item.dayOfWeek = dayOfWeek;
@@ -211,9 +211,63 @@ async function updateSplitData(splitName, dataType, replacementData) {
   return true;
 }
 
-// add exercise to split
+/**
+ * Gets the next available ID for an exercise
+ * @returns {number} next available ID
+ */
+async function idManager(splits) {
+  const list = splits.exerciseList;
 
-async function addExercise(splitName, exerciseType) {}
+  if (list != []) {
+    const id = split.exerciseList.length + 1;
+    return id;
+  } else {
+    return 0;
+  }
+}
+
+/**
+ * Adds an empty exercise to a specified split
+ * @param {string} splitName the name that identifies the split
+ * @param {string} exerciseType the type of exercise to be added
+ * @returns {boolean} a boolean value representing if the data was stored
+ */
+async function addExercise(splitName, exerciseType) {
+  // needs better error handling
+  const splits = getItem('splits');
+  let counter = 0;
+  const selectedSplit = loopThroughSplits(splits, splitName, counter);
+  const newExercise = exercise;
+  const id = idManager(splits);
+
+  newExercise.id = id;
+
+  if (id == 0) {
+    selectedSplit.exerciseList = [];
+  }
+
+  switch (exerciseType) {
+    case 'weight':
+      newExercise.exercise = weightExercise;
+      break;
+    case 'cardio':
+      newExercise.exercise = cardio;
+      break;
+    case 'distance':
+      newExercise.exercise = cardioDistance;
+      break;
+    default:
+      console.error('Error in addExercise: invalid exercise type');
+      return false;
+  }
+
+  selectedSplit.exerciseList.push(newExercise);
+
+  splits[counter] = selectedSplit;
+
+  storeItem('splits', splits);
+  return true;
+}
 
 /**
  * Update a preexisting exercise within a split
