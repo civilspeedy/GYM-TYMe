@@ -5,6 +5,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const split = {
+  id: null,
   name: null,
   dayOfWeek: null,
   exerciseList: [],
@@ -39,6 +40,23 @@ const cardioDistance = {
   name: null,
   time: time,
   distance: null,
+};
+
+const goal = {
+  id: null,
+  value: null,
+};
+
+const date = {
+  day: null,
+  month: null,
+  year: null,
+};
+
+const progress = {
+  id: null,
+  value: null,
+  date: date,
 };
 
 /**
@@ -81,7 +99,13 @@ export async function getItem(key) {
   try {
     const item = await AsyncStorage.getItem(key);
     const wrappedItem = stj(item);
-    return wrappedItem;
+
+    const exists = checkIfExists(wrappedItem);
+    if (exists) {
+      return wrappedItem;
+    } else {
+      return null;
+    }
   } catch (e) {
     console.error('Error in getItem ', e);
     return null;
@@ -122,232 +146,52 @@ export async function checkIfExists(item) {
 }
 
 /**
- * function to store a new split, first the storage location is checked to see if it already exits
- * @param {string} name the name the user wishes to give to the spit
- * @param {string} dayOfTheWeek the day of the week the split will be assigned to
+ * Gets next available id
+ * @param {Array} list
+ * @returns {number} the id to be used
  */
-async function createSplit(name, dayOfWeek) {
-  const item = split;
-  item.name = name;
-  item.dayOfWeek = dayOfWeek;
+function nextID(list) {
+  const length = list.length;
 
-  let list = [];
-  if (checkIfExists('splits')) {
-    list = await getItem('splits');
-    if (!Array.isArray(list)) {
-      console.error('Error in handleSplitStorage: not Array');
-    }
-  }
-  list.push(item);
-  storeItem('splits', item);
-}
-
-/**
- * Returns all splits in storage
- * @returns {Array} an array containing all split objects
- */
-async function getSplits() {
-  const item = await getItem('splits');
-  if (checkIfExists(item)) {
-    return item;
-  } else {
-    console.error(
-      'Error in getSplits: You are fetching for splits where there are none.'
-    );
-    return null;
-  }
-}
-
-/**
- * Finds a split based of a name and returns
- * @param {Array} splits the array containing the splits
- * @param {string} splitName a name to identify the split with
- * @param {number} counter a number to increment marking the split's location in the list
- * @returns {object} the matching split
- */
-function loopThroughSplits(splits, splitName, counter) {
-  for (const split in splits) {
-    counter++;
-    if (split.name == splitName) {
-      return split;
-    }
-  }
-  return null;
-}
-
-/**
- * Updates data in a stored split, excluding exercise data
- * @param {string} splitName the name of the split to be updated
- * @param {string} dataType the type of data to be updated
- * @param {*} replacementData the new data
- */
-async function updateSplitData(splitName, dataType, replacementData) {
-  const splits = getSplits();
-  let counter = 0;
-  const selectedSplit = loopThroughSplits(splits, splitName, counter);
-
-  if (selectedSplit === null) {
-    console.error('Error in updateSplits: there are no splits with this name');
-    return false;
-  }
-
-  switch (dataType) {
-    case 'name':
-      selectedSplit.name = replacementData;
-      break;
-    case 'dayOfWeek':
-      selectedSplit.dayOfWeek = replacementData;
-      break;
-    default:
-      console.error(
-        'Error in updateSplitData: could not find matching attribute'
-      );
-      return false;
-  }
-
-  splits[counter] = selectedSplit;
-
-  storeItem('splits', splits);
-  return true;
-}
-
-/**
- * Gets the next available ID for an exercise
- * @returns {number} next available ID
- */
-async function idManager(splits) {
-  const list = splits.exerciseList;
-
-  if (list != []) {
-    const id = split.exerciseList.length + 1;
-    return id;
-  } else {
+  if (length == 0) {
     return 0;
+  } else {
+    return length + 1;
   }
 }
 
+// all splits should have an id and that is used to link exercises
+// exercises should be stored separately
+
 /**
- * Adds an empty exercise to a specified split
- * @param {string} splitName the name that identifies the split
- * @param {string} exerciseType the type of exercise to be added
- * @returns {boolean} a boolean value representing if the data was stored
+ * Stores an new empty split in storage
+ * @param {string} name the name of the split
  */
-async function addExercise(splitName, exerciseType) {
-  // needs better error handling
-  const splits = getItem('splits');
-  let counter = 0;
-  const selectedSplit = loopThroughSplits(splits, splitName, counter);
-  const newExercise = exercise;
-  const id = idManager(splits);
+async function newSplit(name) {
+  let splits = getItem('splits');
 
-  newExercise.id = id;
+  const newSplit = split;
+  newSplit.id = nextID(splits);
+  newSplit.name = name;
 
-  if (id == 0) {
-    selectedSplit.exerciseList = [];
+  if (splits !== null) {
+    splits.push(newSplit);
+  } else {
+    splits = [];
+    newList.push(newSplit);
   }
-
-  switch (exerciseType) {
-    case 'weight':
-      newExercise.exercise = weightExercise;
-      break;
-    case 'cardio':
-      newExercise.exercise = cardio;
-      break;
-    case 'distance':
-      newExercise.exercise = cardioDistance;
-      break;
-    default:
-      console.error('Error in addExercise: invalid exercise type');
-      return false;
-  }
-
-  selectedSplit.exerciseList.push(newExercise);
-
-  splits[counter] = selectedSplit;
-
-  storeItem('splits', splits);
-  return true;
+  storeItem(splits);
 }
 
-/**
- * Update a preexisting exercise within a split
- * @param {string} splitName the name of the split containing the exercise
- * @param {number} exerciseId the number to identify the exercise with
- * @param {string} exerciseType the type of exercise
- * @param {string} dataType the type of data being updated
- * @param {*} replacementData the new data
- * @returns {boolean} a boolean representing whether the data was stored
- */
-async function updateExercise(
-  splitName,
-  exerciseId,
-  exerciseType,
-  dataType,
-  replacementData
-) {
-  const splits = getSplits();
+async function updateSplit(id, dataType, data) {
+  let splits = getItem('splits');
+  let selectedSplit = null;
 
-  let selectedExercise = null;
-  let splitCount = 0;
-  let exerciseCount = 0;
-
-  for (const split in splits) {
-    splitCount++;
-    if (split.name == splitName) {
-      for (const exerciseInList in split.exerciseList) {
-        exerciseCount++;
-        if (exercise.id == exerciseId) {
-          selectedExercise = exerciseInList.exercise;
-          break;
-        }
+  if (splits !== null) {
+    for (const split in splits) {
+      if (split.id == id) {
+        selectedSplit = split;
       }
     }
-  }
-
-  if (selectedExercise === null) {
-    console.log('Error in updateExercise: could not find exercise');
-    return false;
-  }
-
-  if (dataType == 'name') {
-    selectedExercise.name = replacementData;
-    return true;
-  }
-
-  if (exerciseType == 'weight') {
-    switch (dataType) {
-      case 'weight':
-        selectedExercise.weight = replacementData;
-        break;
-      case 'reps':
-        selectedExercise.reps = replacementData;
-        break;
-      case 'sets':
-        selectedExercise.sets = replacementData;
-        break;
-      default:
-        console.error(
-          'Error in updateExercise: could not find matching attribute'
-        );
-        return false;
-    }
-    return true;
-  }
-
-  if (
-    (exerciseType == 'cardio' || exerciseType == 'distanceCardio') &&
-    dataType == 'time'
-  ) {
-    selectedExercise.time = replacementData;
-    return true;
-  } else {
-    if (exerciseType == 'distanceCardio' && dataType == 'distance') {
-      selectedExercise.distance = replacementData;
-      return true;
-    }
-    console.error(
-      'Error in updateExercise: could not find exercise or dataType'
-    );
-    return false;
   }
 }
