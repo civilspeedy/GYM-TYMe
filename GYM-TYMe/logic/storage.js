@@ -1,5 +1,5 @@
 /**
- * @file Contains code relating to data storage functionality
+ * @file Contains code relating to data storage functionality.
  * @module storage
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,11 +8,11 @@ const split = {
   id: null,
   name: null,
   dayOfWeek: null,
-  exerciseList: [],
 };
 
 const exercise = {
   id: null,
+  splitId: null,
   exercise: null,
   done: false,
 };
@@ -60,21 +60,21 @@ const progress = {
 };
 
 /**
- *Parses a json(object) to a string
+ *Parses a json(object) to a string.
  * @param {object} val the object value to parsed as a string
  * @returns {string} the object as a string
  */
 const jts = (val) => JSON.stringify(val);
 
 /**
- * Parses a string into a json (object)
+ * Parses a string into a json (object).
  * @param {string} val
  * @returns {object} the string now as an object
  */
 const stj = (val) => (val ? JSON.parse(val) : null);
 
 /**
- * A simple function for storing any data
+ * A simple function for storing any data.
  * @param {string} key the key to identify the data with
  * @param {*} item the data to be stored
  * @returns {boolean} a boolean value representing if the storage was successful
@@ -91,7 +91,7 @@ export async function storeItem(key, item) {
 }
 
 /**
- * A function for fetching data from storage
+ * A function for fetching data from storage.
  * @param {string} key the key to identify the data with
  * @returns {object} the fetched data
  */
@@ -113,7 +113,7 @@ export async function getItem(key) {
 }
 
 /**
- * A function to remove data from storage
+ * A function to remove data from storage.
  * @param {string} key the key to identify the data with
  * @returns {boolean} a boolean value representing whether the data was successfully removed or not
  */
@@ -128,7 +128,7 @@ export async function removeItem(key) {
 }
 
 /**
- *Checks the type of a passed item to determine if it exists in storage or not
+ *Checks the type of a passed item to determine if it exists in storage or not.
  * @param {object} item
  * @returns {boolean} a boolean value representing whether the item exists or not
  */
@@ -146,7 +146,26 @@ export async function checkIfExists(item) {
 }
 
 /**
- * Gets next available id
+ * Finds a item in an array based off id.
+ * @param {Array} list the array to be searched through
+ * @param {number} id the id of the item being searched for
+ * @returns {object} the item
+ */
+async function itemSearch(list, id) {
+  if (list !== null) {
+    for (const item in list) {
+      if (item.id == id) {
+        return item;
+      }
+    }
+  } else {
+    console.error('Error in itemSearch: could not find');
+    return null;
+  }
+}
+
+/**
+ * Gets next available id.
  * @param {Array} list
  * @returns {number} the id to be used
  */
@@ -164,7 +183,7 @@ function nextID(list) {
 // exercises should be stored separately
 
 /**
- * Stores an new empty split in storage
+ * Stores an new empty split in storage.
  * @param {string} name the name of the split
  */
 async function newSplit(name) {
@@ -183,15 +202,35 @@ async function newSplit(name) {
   storeItem(splits);
 }
 
+async function newExercise(name, type, splitId) {
+  const splits = getItem('splits');
+  const split = itemSearch(splits, splitId);
+  let exercises = getItem('exercises');
+
+  if (split !== null) {
+  } else {
+    console.error('Error in newExercise: No ID match');
+  }
+}
+
 async function updateSplit(id, dataType, data) {
   let splits = getItem('splits');
-  let selectedSplit = null;
+  const selectedSplit = itemSearch(splits, id);
 
-  if (splits !== null) {
-    for (const split in splits) {
-      if (split.id == id) {
-        selectedSplit = split;
-      }
-    }
+  switch (dataType) {
+    case 'name':
+      selectedSplit.name = data;
+      break;
+    case 'dayOfWeek':
+      selectedSplit.dayOfWeek = data;
+      break;
+    default:
+      console.error('Error in updateSplit: attribute could not be found');
+      return false;
   }
+
+  splits[id] = selectedSplit;
+
+  storeItem('splits', splits);
+  return true;
 }
