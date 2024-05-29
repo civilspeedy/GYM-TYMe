@@ -236,14 +236,13 @@ async function updateSplit(id, dataType, data) {
 async function newExercise(name, type, splitId) {
   const splits = getItem('splits');
   const split = itemSearch(splits, splitId);
-  let exercises = getItem('exercises');
+  let exerciseTemp = null;
 
   if (split !== null) {
+    let exercises = getItem('exercises');
     const temp = exercise;
     temp.id = nextID(exercises);
     temp.splitId = splitId;
-
-    let exerciseTemp = null;
 
     switch (type) {
       case 'weight':
@@ -264,17 +263,12 @@ async function newExercise(name, type, splitId) {
     }
 
     exerciseTemp.name = name;
-
-    if (exercises === null) {
-      exercises = [];
-    }
-    exercises.push(exerciseTemp);
-    storeItem('exercises', exercises);
-    return true;
   } else {
-    console.error('Error in newExercise: No ID match');
-    return false;
+    exercises = [];
   }
+  exercises.push(exerciseTemp);
+  storeItem('exercises', exercises);
+  return true;
 }
 
 /**
@@ -327,3 +321,9 @@ async function updateExercise(id, dataType, data) {
 }
 
 // goals
+async function newGoal(id) {
+  const goals = getItem('goals');
+
+  if (goals !== null) {
+  }
+}
