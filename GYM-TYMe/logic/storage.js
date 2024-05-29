@@ -189,9 +189,9 @@ function nextID(list) {
 async function newSplit(name) {
   let splits = getItem('splits');
 
-  const newSplit = split;
-  newSplit.id = nextID(splits);
-  newSplit.name = name;
+  const temp = split;
+  temp.id = nextID(splits);
+  temp.name = name;
 
   if (splits !== null) {
     splits.push(newSplit);
@@ -208,8 +208,37 @@ async function newExercise(name, type, splitId) {
   let exercises = getItem('exercises');
 
   if (split !== null) {
+    const temp = exercise;
+    temp.id = nextID(exercises);
+    temp.splitId = splitId;
+
+    let exerciseTemp = null;
+    switch (type) {
+      case 'weight':
+        exerciseTemp = weightExercise;
+        exerciseTemp.name = name;
+        break;
+      case 'cardio':
+        exerciseTemp = cardio;
+        exerciseTemp.name = name;
+        break;
+      case 'distance':
+        exerciseTemp = cardioDistance;
+        exerciseTemp.name = name;
+        break;
+      default:
+        console.error('Error in newExercise: no attribute matches.');
+        return false;
+    }
+
+    if (exercises !== null) {
+      splits.push(exerciseTemp);
+    } else {
+      exercises = [];
+    }
   } else {
     console.error('Error in newExercise: No ID match');
+    return false;
   }
 }
 
