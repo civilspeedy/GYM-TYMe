@@ -215,18 +215,9 @@ async function updateSplit(id, dataType, data) {
 
   try {
     selectedSplit[dataType] = data; // try this approach instead of switches
-  } catch (e) {}
-
-  switch (dataType) {
-    case 'name':
-      selectedSplit.name = data;
-      break;
-    case 'dayOfWeek':
-      selectedSplit.dayOfWeek = data;
-      break;
-    default:
-      console.error('Error in updateSplit: attribute could not be found');
-      return false;
+  } catch (e) {
+    console.log('Error in updateSplit: ', e);
+    return false;
   }
 
   splits[id] = selectedSplit;
@@ -278,6 +269,7 @@ async function newExercise(name, type, splitId) {
       exercises = [];
     }
     exercises.push(exerciseTemp);
+    storeItem('exercises', exercises);
     return true;
   } else {
     console.error('Error in newExercise: No ID match');
@@ -285,7 +277,14 @@ async function newExercise(name, type, splitId) {
   }
 }
 
-async function updateExercise(id, exerciseType, dataType, data) {
+/**
+ * Updates an existing exercise.
+ * @param {number} id the id of the exercise to be updated
+ * @param {string} dataType the type of data being updated
+ * @param {*} data the new data for the update
+ * @returns {boolean} a boolean value on whether the update was successful
+ */
+async function updateExercise(id, dataType, data) {
   const exercises = getItem('exercises');
   let selectedExercise = null;
 
@@ -293,46 +292,38 @@ async function updateExercise(id, exerciseType, dataType, data) {
     for (const exercise in exercises) {
       if (exercise.id == id) {
         selectedExercise = exercise;
+        break;
       }
     }
 
-    switch (dataType) {
-      case 'name':
-        selectedExercise.name = data;
-        break;
-      case 'id':
-        selectedExercise.id = data;
-        break;
-      case 'split id':
-        selectedExercise.splitId = data;
-        break;
-      default:
-        const subExercise = selectedExercise.exercise;
-
-        switch (exerciseType) {
-          case 'weight':
-            switch (dataType) {
-              case 'weight':
-                subExercise.weight = data;
-                break;
-              case 'reps':
-                subExercise.reps = data;
-                break;
-              case 'sets':
-                break;
-            }
-            break;
-          case 'cardio':
-            break;
-          case 'distance':
-            break;
-          default:
-            console.error('Error in updateExercise: exerciseType mismatch');
-            return false;
-        }
+    if (selectedExercise === null) {
+      console.error('Error in updateExercise: exercise does not exist');
+      return false;
     }
+
+    if (['name', 'id', 'split id'].includes(dataType)) {
+      try {
+        selectedExercise[dataType] = data;
+      } catch (e) {
+        console.error('Error in updateExercise: ', e);
+        return false;
+      }
+    } else {
+      try {
+        selectedExercise.exercise[dataType] = data;
+      } catch (e) {
+        console.error('Error in updateExercise: ', e);
+        return false;
+      }
+    }
+
+    exercises[id] = selectedExercise;
+    storeItem('exercises', exercises);
+    return true;
   } else {
     console.error('Error in updateExercise: exercises is empty.');
     return false;
   }
 }
+
+// goals
