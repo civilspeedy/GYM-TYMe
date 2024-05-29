@@ -197,54 +197,25 @@ async function newSplit(name) {
     splits.push(newSplit);
   } else {
     splits = [];
-    newList.push(newSplit);
+    splits.push(newSplit);
   }
   storeItem(splits);
 }
 
-async function newExercise(name, type, splitId) {
-  const splits = getItem('splits');
-  const split = itemSearch(splits, splitId);
-  let exercises = getItem('exercises');
-
-  if (split !== null) {
-    const temp = exercise;
-    temp.id = nextID(exercises);
-    temp.splitId = splitId;
-
-    let exerciseTemp = null;
-    switch (type) {
-      case 'weight':
-        exerciseTemp = weightExercise;
-        exerciseTemp.name = name;
-        break;
-      case 'cardio':
-        exerciseTemp = cardio;
-        exerciseTemp.name = name;
-        break;
-      case 'distance':
-        exerciseTemp = cardioDistance;
-        exerciseTemp.name = name;
-        break;
-      default:
-        console.error('Error in newExercise: no attribute matches.');
-        return false;
-    }
-
-    if (exercises !== null) {
-      splits.push(exerciseTemp);
-    } else {
-      exercises = [];
-    }
-  } else {
-    console.error('Error in newExercise: No ID match');
-    return false;
-  }
-}
-
+/**
+ * Updates the data of a given split.
+ * @param {number} id the id of the split to be updated
+ * @param {string} dataType the type of data to updated
+ * @param {*} data the new data for the update
+ * @returns {boolean} a boolean value representing whether the update was successful
+ */
 async function updateSplit(id, dataType, data) {
   let splits = getItem('splits');
   const selectedSplit = itemSearch(splits, id);
+
+  try {
+    selectedSplit[dataType] = data; // try this approach instead of switches
+  } catch (e) {}
 
   switch (dataType) {
     case 'name':
@@ -262,4 +233,106 @@ async function updateSplit(id, dataType, data) {
 
   storeItem('splits', splits);
   return true;
+}
+
+/**
+ * A creates a new empty exercise and stores it.
+ * @param {string} name the name of the exercise
+ * @param {string} type the type of exercise
+ * @param {number} splitId the id of the split the exercise is linked to
+ * @returns {boolean} a boolean value representing if the the exercise was stored or not
+ */
+async function newExercise(name, type, splitId) {
+  const splits = getItem('splits');
+  const split = itemSearch(splits, splitId);
+  let exercises = getItem('exercises');
+
+  if (split !== null) {
+    const temp = exercise;
+    temp.id = nextID(exercises);
+    temp.splitId = splitId;
+
+    let exerciseTemp = null;
+
+    switch (type) {
+      case 'weight':
+        exerciseTemp = weightExercise;
+        break;
+
+      case 'cardio':
+        exerciseTemp = cardio;
+        break;
+
+      case 'distance':
+        exerciseTemp = cardioDistance;
+        break;
+
+      default:
+        console.error('Error in newExercise: no attribute matches.');
+        return false;
+    }
+
+    exerciseTemp.name = name;
+
+    if (exercises === null) {
+      exercises = [];
+    }
+    exercises.push(exerciseTemp);
+    return true;
+  } else {
+    console.error('Error in newExercise: No ID match');
+    return false;
+  }
+}
+
+async function updateExercise(id, exerciseType, dataType, data) {
+  const exercises = getItem('exercises');
+  let selectedExercise = null;
+
+  if (exercises !== null) {
+    for (const exercise in exercises) {
+      if (exercise.id == id) {
+        selectedExercise = exercise;
+      }
+    }
+
+    switch (dataType) {
+      case 'name':
+        selectedExercise.name = data;
+        break;
+      case 'id':
+        selectedExercise.id = data;
+        break;
+      case 'split id':
+        selectedExercise.splitId = data;
+        break;
+      default:
+        const subExercise = selectedExercise.exercise;
+
+        switch (exerciseType) {
+          case 'weight':
+            switch (dataType) {
+              case 'weight':
+                subExercise.weight = data;
+                break;
+              case 'reps':
+                subExercise.reps = data;
+                break;
+              case 'sets':
+                break;
+            }
+            break;
+          case 'cardio':
+            break;
+          case 'distance':
+            break;
+          default:
+            console.error('Error in updateExercise: exerciseType mismatch');
+            return false;
+        }
+    }
+  } else {
+    console.error('Error in updateExercise: exercises is empty.');
+    return false;
+  }
 }
