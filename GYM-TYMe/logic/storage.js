@@ -320,10 +320,70 @@ async function updateExercise(id, dataType, data) {
   }
 }
 
-// goals
+/**
+ * Creates a new goal and pushes to list in storage.
+ * @param {number} id the id of the goal that matches it respective exercise
+ * @returns {boolean} a boolean value representing success
+ */
 async function newGoal(id) {
-  const goals = getItem('goals');
+  let goals = getItem('goals');
+
+  const tempGoal = goal;
+  tempGoal.id = id;
+
+  if (goals === null) {
+    goals = [];
+  }
+  goals.push(tempGoal);
+
+  storeItem('goals', goals);
+  return true;
+}
+
+/**
+ * Updates an existing goal;
+ * @param {number} id the id to identify the goal
+ * @param {string} dataType the type of data to be updated
+ * @param {*} data the new data
+ * @returns {boolean} a boolean value representing success
+ */
+async function updateGoal(id, dataType, data) {
+  let goals = getItem('goals');
+  let selectedGoal = null;
 
   if (goals !== null) {
+    selectedGoal = itemSearch(goals, id);
+
+    try {
+      goal[dataType] = data;
+      goals[id] = goal;
+      storeItem('goals', goals);
+      return true;
+    } catch (e) {
+      console.error('Error in updateGoal: ', e);
+      return false;
+    }
+  } else {
+    console.error('Error in updateGoal: goals in empty or null');
+    return false;
   }
+}
+
+/**
+ * Creates a new empty progress and stores it.
+ * @param {number} id the id to identify the progress which matches its respective exercise
+ * @returns {boolean} a boolean value representing success
+ */
+async function newProgress(id) {
+  let progressStore = getItem('progress');
+  const newProgress = progress;
+  newProgress.id = id;
+
+  if (progressStore === null) {
+    progressStore = [];
+  }
+
+  progressStore.push(newProgress);
+  storeItem('progress');
+  return true;
 }
