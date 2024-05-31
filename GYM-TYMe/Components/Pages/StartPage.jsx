@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 
 export default function StartPage() {
   const fade = useRef(new Animated.Value(0)).current;
+  const [state, setState] = useState(1);
 
   const fadeIn = () => {
     Animated.timing(fade, {
@@ -22,14 +23,41 @@ export default function StartPage() {
 
   useEffect(() => {
     fadeIn();
-  }, []);
 
-  // look at Animated.Text
+    const fadeOutUpdate = () => {
+      fadeOut(() => {
+        setState(state + 1);
+      });
+    };
+
+    if (state < 5) {
+      // not triggering correctly
+      console.log('updating timer');
+      const wait = setTimeout(fadeOutUpdate, 5000);
+
+      return () => clearTimeout(wait);
+    }
+  }, [state]);
+
   return (
     <View style={stl.container}>
-      <Animated.View style={[stl.animContainer, { opacity: fade }]}>
-        <Text style={{ color: 'white' }}>Test</Text>
-      </Animated.View>
+      {state == 1 ? (
+        <Animated.Text style={[stl.text, { opacity: fade }]}>
+          Hi there!
+        </Animated.Text>
+      ) : state == 2 ? (
+        <Animated.Text style={[stl.text, { opacity: fade }]}>
+          Welcome to GYM TYMe!
+        </Animated.Text>
+      ) : state == 3 ? (
+        <Animated.Text style={[stl.text, { opacity: fade }]}>
+          Your personalised fitness companion app.
+        </Animated.Text>
+      ) : (
+        <Animated.Text style={[stl.text, { opacity: fade }]}>
+          Lets begin with planning your days...
+        </Animated.Text>
+      )}
     </View>
   );
 }
@@ -44,5 +72,10 @@ const stl = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center',
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
