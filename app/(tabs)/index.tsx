@@ -1,28 +1,16 @@
-import { Image, StyleSheet, Platform, View, Text } from 'react-native';
+import Picker from '@/components/Picker';
+import { universalStyle } from '@/constants/styling';
+import React from 'react';
+import { View, Text } from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen(): React.JSX.Element {
   return (
-    <View>
+    <View style={universalStyle.background}>
       <Text>Hello!</Text>
+      <Picker
+        title={'title'}
+        options={['hello']}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
