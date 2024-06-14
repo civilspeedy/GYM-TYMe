@@ -9,7 +9,7 @@ export default function HomeScreen(): React.JSX.Element {
       <Text>Hello!</Text>
       <Picker
         title={'title'}
-        options={['hello']}
+        options={['Hello', 'Hello 2', 'Hello 3']}
       />
     </View>
   );

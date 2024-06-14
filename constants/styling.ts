@@ -7,8 +7,16 @@ export const universalStyle = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
   },
+  subObject: {
+    backgroundColor: colours.BackgroundThree,
+    borderColor: colours.BackgroundFour,
+    borderRadius: 10,
+    borderWidth: 2,
+    padding: 10,
+    margin: 5,
+  },
   background: {
-    backgroundColor: colours.BackgroundOne,
+    backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
     flex: 1,
